@@ -8,7 +8,6 @@ module.exports.addInterview = (req, res) => {
       title: "Schedule An Interview",
     });
   }
-
   return res.redirect("/");
 };
 
@@ -17,13 +16,8 @@ module.exports.create = async (req, res) => {
   try {
     const { company, date } = req.body;
 
-    let interview = await Interview.create(
-      {
-        company,
-        date,
-      })
-      console.log(interview)
-      return res.redirect("back");
+    let interview = await Interview.create({ company, date })
+    return res.redirect("back");
   } catch (err) {
     console.log(err);
     return;
@@ -44,48 +38,43 @@ module.exports.enrollInInterview = async (req, res) => {
           "students.student": student.id,
         });
 
-        // preventing student from enrolling in same company more than once
-        if (alreadyEnrolled) {
-          if (alreadyEnrolled.company === interview.company) {
-            req.flash(
-              "error",
-              `${student.name} already enrolled in ${interview.company} interview!`
-            );
-            return res.redirect("back");
-          }
+      // preventing student from enrolling in same company more than once
+      if (alreadyEnrolled) {
+        if (alreadyEnrolled.company === interview.company) {
+          comsole.log("error", `${student.name} already enrolled in ${interview.company} interview!`);
+          return res.redirect("back");
         }
+      }
 
-        let studentObj = {
-          student: student.id,
-          result: result,
-        };
+      let studentObj = {
+        student: student.id,
+        result: result,
+      };
 
-        // updating students field of interview by putting reference of newly enrolled student
-        await interview.updateOne({
-          $push: { students: studentObj },
-        });
+      // updating students field of interview by putting reference of newly enrolled student
+      await interview.updateOne({
+        $push: { students: studentObj },
+      });
 
-        // updating interview of student
-        let assignedInterview = {
-          company: interview.company,
-          date: interview.date,
-          result: result,
-        };
-        await student.updateOne({
-          $push: { interviews: assignedInterview },
-        });
+      // updating interview of student
+      let assignedInterview = {
+        company: interview.company,
+        date: interview.date,
+        result: result,
+      };
+      await student.updateOne({
+        $push: { interviews: assignedInterview },
+      });
 
-        console.log(
-          "success",
-          `${student.name} enrolled in ${interview.company} interview!`
-        );
-        return res.redirect("back");
+      console.log("success",`${student.name} enrolled in ${interview.company} interview!`);
+      return res.redirect("back");
       }
       return res.redirect("back");
     }
-    return res.redirect("back");
+      return res.redirect("back");
   } catch (err) {
-    console.log("error", "Error in enrolling interview!");
+      console.log("error", "Error in enrolling interview!");
+      return;
   }
 };
 
@@ -94,11 +83,9 @@ module.exports.deallocate = async (req, res) => {
   try {
     const { studentId, interviewId } = req.params;
     
-    console.log(studentId +" "+ interviewId);
     // find the interview
     const interview = await Interview.findById(interviewId);
     
-    console.log(interview);
     if (interview) {
       // remove reference of student from interview schema
       await Interview.findByIdAndDelete(
@@ -111,10 +98,11 @@ module.exports.deallocate = async (req, res) => {
         { _id: studentId },
         { $pull: { interviews: { company: interview.company } } }
       );
-      return res.redirect("back");
+      return res.redirect('/');
     }
-    return res.redirect("back");
+    return res.redirect('/');
   } catch (err) {
     console.log("error", "Couldn't deallocate from interview", err);
+    return ;
   }
 };

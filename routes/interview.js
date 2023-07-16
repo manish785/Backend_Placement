@@ -1,10 +1,5 @@
 const express = require("express");
-const {
-  addInterview,
-  create,
-  enrollInInterview,
-  deallocate,
-} = require("../controllers/interviewController");
+const { addInterview, create, enrollInInterview, deallocate} = require("../controllers/interviewController");
 const router = express.Router();
 
 // redering add interview page

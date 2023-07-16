@@ -1,14 +1,9 @@
 const express = require("express");
-const {
-  addStudent,
-  update,
-  editStudent,
-  create,
-  destroy,
-} = require("../controllers/studentController");
+const { addStudent, update, editStudent, create, destroy,} 
+= require("../controllers/studentController");
 const router = express.Router();
 
-// rending add  Student page
+// rending add Student page
 router.get('/add-student', addStudent);
 
 // updating the student

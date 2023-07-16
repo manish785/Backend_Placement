@@ -12,10 +12,10 @@ passport.use(new LocalStratergy({
       User.findOne({email: email})
       .then(user => {
         if (!user || user.password !== password) {
-         console.log('Invalid Username/Password');
+          console.log('Invalid Username/Password');
           return done(null, false);
         }
-        return done(null, user);
+          return done(null, user);
       })
       .catch(err => {
         console.log('Error in finding user --> Passport', err);
@@ -54,9 +54,8 @@ passport.checkAuthentication = function (req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-
   // redirecting the user
-  return res.redirect("/");
+  return res.redirect('/');
 };
 
 passport.setAuthenticatedUser = function (req, res, next) {

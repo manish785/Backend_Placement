@@ -1,3 +1,4 @@
+// acquiring the required pacakge
 const express = require('express');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -14,8 +15,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
  //connect to database
  dotenv.config();
  mongoose.connect(process.env.MONGO_URL)
- .then(()=>console.log("DB connection Succesful")).catch((err)=>{
-     console.log(err);
+    .then(()=>console.log("DB connection Succesful"))
+    .catch((err)=>{
+    console.log(err);
+    return;
  });
 
 // used for mantaining the sessions
@@ -36,13 +39,13 @@ app.use(session({
   secret : 'blahsomething',
   //user is not logined , Identity has not established
   saveUninitialized : false,
-  // Identity has been established
+  // Identity has been established, need to save again and again
   resave : false,
   cookie :{
       maxAge: (1000 * 60 * 60)
   },
   store: new MongoStore({
-      mongoUrl:  'mongodb+srv://Mani_9876:Manish1234@cluster0.2jtmimb.mongodb.net/?retryWrites=true&w=majority',
+      mongoUrl:  process.env.MONGO_URL,
       mongooseConnection: db,
       autoRemove: 'disabled'
     }, function (err){
@@ -59,9 +62,8 @@ app.use(passport.setAuthenticatedUser);
 // using express routers
 app.use('/', require('./routes'));
 
-// using bodyParser
-// app.use(bodyParser.json());
 
+// running the server on the particular port
 app.listen(port, function(err){
     if(err){
         console.log(`Error while listening on port,${err}`);

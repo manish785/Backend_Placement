@@ -8,7 +8,6 @@ module.exports.addStudent = (req, res) => {
       title: "Add Student",
     });
   }
-
   return res.redirect("/");
 };
 
@@ -22,7 +21,6 @@ module.exports.editStudent = async (req, res) => {
     );
     
     await student.save();
-    console.log(student);
 
     return res.render("edit_student", {
       title: "Edit Student",
@@ -38,34 +36,15 @@ module.exports.editStudent = async (req, res) => {
 // creating a new Student
 module.exports.create = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      batch,
-      college,
-      placementStatus,
-      dsa_score,
-      react_score,
-      webdev_score,
-    } = req.body;
+    const { name, email, batch, college, placementStatus, dsa_score, react_score, webdev_score } = req.body;
 
     // check if student already exist
     let student = await Student.findOne({ email });
     
 
       if (!student) {
-        await Student.create(
-          {
-            name,
-            email,
-            college,
-            batch,
-            dsa_score,
-            react_score,
-            webdev_score,
-            placementStatus,
-          })
-          return res.redirect("back");
+        await Student.create({ name, email, college, batch, dsa_score, react_score, webdev_score, placementStatus })
+        return res.redirect("back");
       } else {
         return res.redirect("back");
       }
